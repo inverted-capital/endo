@@ -1,6 +1,6 @@
 // @ts-nocheck XXX Babel types
 import * as babelParser from '@babel/parser';
-import babelGenerate from '@agoric/babel-generator';
+import babelGenerate from '@babel/generator';
 import babelTraverse from '@babel/traverse';
 import * as babelTypes from '@babel/types';
 
@@ -26,7 +26,11 @@ export const makeTransformSource = (makeModulePlugins, babel = null) => {
     const { sourceUrl, sourceMapUrl, sourceType, sourceMap, sourceMapHook } =
       sourceOptions;
 
-    const ast = parseBabel(source, { sourceType });
+    const ast = parseBabel(source, {
+      sourceType,
+      tokens: true,
+      createParenthesizedExpression: true,
+    });
 
     traverseBabel(ast, visitorFromPlugin(analyzePlugin));
     traverseBabel(ast, visitorFromPlugin(transformPlugin));
@@ -34,14 +38,18 @@ export const makeTransformSource = (makeModulePlugins, babel = null) => {
     const sourceMaps = sourceOptions.sourceMapHook !== undefined;
 
     const { code: transformedSource, map: transformedSourceMap } =
-      generateBabel(ast, {
-        sourceFileName: sourceMapUrl,
-        sourceMaps,
-        inputSourceMap: sourceMap,
-        retainLines: true,
-        compact: true,
-        verbatim: true,
-      });
+      generateBabel(
+        ast,
+        {
+          sourceFileName: sourceMapUrl,
+          sourceMaps,
+          inputSourceMap: sourceMap,
+          retainLines: true,
+          preserveFormat: true,
+          verbatim: true,
+        },
+        source,
+      );
 
     if (sourceMaps) {
       sourceMapHook(transformedSourceMap, {
