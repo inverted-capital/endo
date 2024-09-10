@@ -63,6 +63,8 @@ test.skip('getGlobalIntrinsics', () => {
     // https://github.com/endojs/endo/issues/550
     'AggregateError',
     // https://github.com/tc39/proposal-explicit-resource-management
+    'AsyncDisposableStack',
+    'DisposableStack',
     'SuppressedError',
 
     // *** 18.4 Other Properties of the Global Object

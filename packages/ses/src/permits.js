@@ -33,6 +33,10 @@ export const constantProperties = {
  * Properties of all global objects.
  * Must be powerless.
  * Maps from property name to the intrinsic name in the whitelist.
+ * Co-maintain with `module.exports.globals` of
+ * `eslint-plugin/lib/configs/recommended.js`.
+ * TODO align better with `globals` to make
+ * co-maintenance easier.
  */
 export const universalPropertyNames = {
   // *** Function Properties of the Global Object
@@ -91,9 +95,7 @@ export const universalPropertyNames = {
 
   // https://github.com/tc39/proposal-explicit-resource-management
   AsyncDisposableStack: 'AsyncDisposableStack',
-  // https://github.com/tc39/proposal-explicit-resource-management
   DisposableStack: 'DisposableStack',
-  // https://github.com/tc39/proposal-explicit-resource-management
   SuppressedError: 'SuppressedError',
 
   // *** Other Properties of the Global Object
@@ -620,7 +622,7 @@ export const permitted = {
     // Seen on FF and XS
     stack: accessor,
     // Superfluously present in some versions of V8.
-    // https://github.com/tc39/notes/blob/master/meetings/2021-10/oct-26.md#:~:text=However%2C%20Chrome%2093,and%20node%2016.11.
+    // https://github.com/tc39/notes/blob/main/meetings/2021-10/oct-26.md#tightening-host-restrictions-to-improve-testing
     cause: false,
   },
 

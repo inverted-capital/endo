@@ -181,9 +181,20 @@ export interface AssertMakeErrorOptions {
   sanitize?: boolean;
 
   /**
+   * Options to be passed as the `options` argument to the error constructor.
+   * Bizarrely, the `SuppressedError` constructor has no options argument.
+   * Thus, if the constructor is `SuppressedError` and a non-empty
+   * `options` argument is present, we would normally report this inconsistency
+   * as an error. However, we do not, because the original `SuppressedError`
+   * we're trying to report likely has more relevant diagnostics than an
+   * error that happens in the attempt to report this error.
    *
+   * For those error constructors that do take an `options` argument,
+   * currently the only defined option is `cause`. If `cause` is provided
+   * both as `options.cause` and `properties.cause`, the latter will override
+   * the former.
    */
-  options?: object;
+  options?: ErrorOptions;
 
   /**
    * Extra properties to be added to the error after `sanitizeError` and
@@ -198,7 +209,7 @@ export interface AssertMakeErrorOptions {
    * layer of abstraction. This is represented by a public `cause` data property
    * on the error, not a hidden annotation.
    *
-   * @deprecated Should be provided in `properties`
+   * @deprecated Should be provided in `properties` or `options`
    */
   cause?: Error;
 
