@@ -270,6 +270,7 @@ export const FunctionInstance = {
   // Do not specify "prototype" here, since only Function instances that can
   // be used as a constructor have a prototype property. For constructors,
   // since prototype properties are instance-specific, we define it there.
+  // The exception to this is Hermes, fixed since in Static Hermes.
 };
 
 // AsyncFunction Instances
