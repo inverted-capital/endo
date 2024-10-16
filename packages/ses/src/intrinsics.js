@@ -98,38 +98,25 @@ export const makeIntrinsicsCollector = () => {
       if (typeof permit !== 'object') {
         throw TypeError(`Expected permit object at whitelist.${name}`);
       }
-      const permitPrototype = permit.prototype;
-      if (!permitPrototype) {
-        // Our final 3 permits (function instances): lockdown, harden, %InitialGetStackString%
-        // are implemented on Hermes as intrinsics with 3 additional descriptors:
-        // - caller {"enumerable":false,"configurable":false}" from [[Proto]]: %FunctionPrototype%
-        // - arguments {"enumerable":false,"configurable":false} from [[Proto]]: %FunctionPrototype%
-        // - prototype {"value":{},"writable":true,"enumerable":false,"configurable":false}
-        // so we tolerate the unexpected prototype property instead of throwing an Error.
-        if (
-          name === 'lockdown' ||
-          name === 'harden' ||
-          name === '%InitialGetStackString%'
-        )
-          // eslint-disable-next-line no-continue
-          continue;
+      const namePrototype = permit.prototype;
+      if (!namePrototype) {
         throw TypeError(`${name}.prototype property not whitelisted`);
       }
       if (
-        typeof permitPrototype !== 'string' ||
-        !objectHasOwnProperty(permitted, permitPrototype)
+        typeof namePrototype !== 'string' ||
+        !objectHasOwnProperty(permitted, namePrototype)
       ) {
         throw TypeError(`Unrecognized ${name}.prototype whitelist entry`);
       }
       const intrinsicPrototype = intrinsic.prototype;
-      if (objectHasOwnProperty(intrinsics, permitPrototype)) {
-        if (intrinsics[permitPrototype] !== intrinsicPrototype) {
-          throw TypeError(`Conflicting bindings of ${permitPrototype}`);
+      if (objectHasOwnProperty(intrinsics, namePrototype)) {
+        if (intrinsics[namePrototype] !== intrinsicPrototype) {
+          throw TypeError(`Conflicting bindings of ${namePrototype}`);
         }
         // eslint-disable-next-line no-continue
         continue;
       }
-      intrinsics[permitPrototype] = intrinsicPrototype;
+      intrinsics[namePrototype] = intrinsicPrototype;
     }
   };
   freeze(completePrototypes);
