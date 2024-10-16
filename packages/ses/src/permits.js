@@ -281,6 +281,7 @@ export const AsyncFunctionInstance = {
 
 // Aliases
 const fn = FunctionInstance;
+const hermesFn = { ...FunctionInstance, prototype: 'undefined' }; // Bypass Hermes bug, fixed in: https://github.com/facebook/hermes/commit/00f18c89c720e1c34592bb85a1a8d311e6e99599
 const asyncFn = AsyncFunctionInstance;
 
 const getter = {
@@ -1641,8 +1642,8 @@ export const permitted = {
     '@@toStringTag': 'string',
   },
 
-  lockdown: fn,
-  harden: { ...fn, isFake: 'boolean' },
+  lockdown: hermesFn,
+  harden: { ...hermesFn, isFake: 'boolean' },
 
-  '%InitialGetStackString%': fn,
+  '%InitialGetStackString%': hermesFn,
 };
