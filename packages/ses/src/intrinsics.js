@@ -99,6 +99,18 @@ export const makeIntrinsicsCollector = () => {
         throw TypeError(`Expected permit object at whitelist.${name}`);
       }
       const namePrototype = permit.prototype;
+
+      // Bypass Hermes bug, fixed in: https://github.com/facebook/hermes/commit/00f18c89c720e1c34592bb85a1a8d311e6e99599
+      if (
+        typeof intrinsic === 'function' &&
+        intrinsic.prototype !== undefined &&
+        namePrototype === 'undefined' // permits.js
+      ) {
+        intrinsic.prototype = undefined;
+      }
+
+      const intrinsicPrototype = intrinsic.prototype;
+
       if (!namePrototype) {
         throw TypeError(`${name}.prototype property not whitelisted`);
       }
@@ -108,7 +120,6 @@ export const makeIntrinsicsCollector = () => {
       ) {
         throw TypeError(`Unrecognized ${name}.prototype whitelist entry`);
       }
-      const intrinsicPrototype = intrinsic.prototype;
       if (objectHasOwnProperty(intrinsics, namePrototype)) {
         if (intrinsics[namePrototype] !== intrinsicPrototype) {
           throw TypeError(`Conflicting bindings of ${namePrototype}`);
